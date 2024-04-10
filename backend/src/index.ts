@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import pg from 'pg';
 
-const app = express();
+export const app = express();
 const port = process.env.PORT || 3000;
 
 const { Client } = pg;
