@@ -11,9 +11,17 @@ export class FakeTodoRepository {
     return this.todos;
   }
 
+  getById(id: number) {
+    return this.todos.find((todo) => todo.id === id);
+  }
+
   create(newTodo: NewTodoDto) {
     const todoToInsert = { ...newTodo, id: 1 };
     this.todos.push(todoToInsert);
     return todoToInsert;
+  }
+
+  truncate() {
+    this.todos = [];
   }
 }

@@ -7,6 +7,10 @@ export async function getAllTodos(): Promise<Todo[]> {
   return todoRepository.getAll();
 }
 
+export async function getTodoById(id: number): Promise<Todo | undefined> {
+  return todoRepository.getById(id);
+}
+
 export async function createTodo(todo: NewTodoDto): Promise<Todo> {
   return todoRepository.create(todo);
 }
