@@ -8,5 +8,5 @@ export async function getAllTodos(): Promise<Todo[]> {
 }
 
 export async function createTodo(todo: NewTodoDto): Promise<Todo> {
-  return { ...todo, id: 1 };
+  return todoRepository.create(todo);
 }

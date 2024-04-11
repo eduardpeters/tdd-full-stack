@@ -1,4 +1,4 @@
-import { Todo } from './types';
+import { NewTodoDto, Todo } from './types';
 
 export class FakeTodoRepository {
   todos: Todo[] = [];
@@ -9,5 +9,11 @@ export class FakeTodoRepository {
 
   getAll() {
     return this.todos;
+  }
+
+  create(newTodo: NewTodoDto) {
+    const todoToInsert = { ...newTodo, id: 1 };
+    this.todos.push(todoToInsert);
+    return todoToInsert;
   }
 }
