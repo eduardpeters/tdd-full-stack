@@ -8,6 +8,6 @@ describe('Todos service', () => {
 
   test('A todo can be added', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
-    expect(await createTodo(newTodo)).toBeTruthy();
+    expect(await createTodo(newTodo)).toHaveProperty('id');
   });
 });
