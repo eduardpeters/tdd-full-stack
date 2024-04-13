@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { getAllTodos, createTodo, getTodoById } from '../src/todosService';
+import {
+  getAllTodos,
+  createTodo,
+  getTodoById,
+  updateTodo,
+} from '../src/todosService';
 
 describe('Todos service', () => {
   test('Empty array is returned when there are no todos', async () => {
@@ -20,5 +25,14 @@ describe('Todos service', () => {
     const created = await createTodo(newTodo);
     const found = await getTodoById(created.id);
     expect(found?.description).toEqual('a new todo');
+  });
+
+  test('A specific todo can be completed', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const created = await createTodo(newTodo);
+    const patchData = { isComplete: true };
+    const updated = await updateTodo(created.id, patchData);
+    expect(updated?.description).toEqual('a new todo');
+    expect(updated?.isComplete).to.be.true;
   });
 });

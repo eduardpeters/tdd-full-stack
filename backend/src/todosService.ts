@@ -14,3 +14,10 @@ export async function getTodoById(id: number): Promise<Todo | undefined> {
 export async function createTodo(todo: NewTodoDto): Promise<Todo> {
   return todoRepository.create(todo);
 }
+
+export async function updateTodo(
+  id: number,
+  data: any
+): Promise<Todo | undefined> {
+  return todoRepository.update(id, data);
+}

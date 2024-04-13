@@ -8,3 +8,8 @@ export interface NewTodoDto {
   description: string;
   isComplete: boolean;
 }
+
+export interface UpdateTodoDto {
+  description?: string;
+  isComplete?: boolean;
+}
