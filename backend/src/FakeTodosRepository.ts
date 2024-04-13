@@ -16,7 +16,7 @@ export class FakeTodoRepository {
   }
 
   create(newTodo: NewTodoDto) {
-    const todoToInsert = { ...newTodo, id: 1 };
+    const todoToInsert = { ...newTodo, id: this.todos.length + 1 };
     this.todos.push(todoToInsert);
     return todoToInsert;
   }
