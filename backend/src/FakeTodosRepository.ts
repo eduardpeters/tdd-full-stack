@@ -16,7 +16,10 @@ export class FakeTodoRepository {
   }
 
   create(newTodo: NewTodoDto) {
-    const todoToInsert = { ...newTodo, id: this.todos.length + 1 };
+    const newId = this.todos.length
+      ? this.todos[this.todos.length - 1].id + 1
+      : 1;
+    const todoToInsert = { ...newTodo, id: newId };
     this.todos.push(todoToInsert);
     return todoToInsert;
   }
