@@ -1,14 +1,17 @@
+import pg from 'pg';
 import { NewTodoDto, Todo, UpdateTodoDto } from './types';
 
 export class TodosRepository {
-  db: any;
+  db: pg.Client;
 
-  constructor(db: any) {
+  constructor(db: pg.Client) {
     this.db = db;
   }
 
-  getAll() {
-    return;
+  async getAll() {
+    const queryText = 'SELECT (id, description, is_complete) FROM todos;';
+    const result = await this.db.query(queryText);
+    return result.rows;
   }
 
   getById(id: number) {
