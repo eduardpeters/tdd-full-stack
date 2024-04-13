@@ -35,4 +35,13 @@ describe('Todos service', () => {
     expect(updated?.description).toEqual('a new todo');
     expect(updated?.isComplete).to.be.true;
   });
+
+  test('A specific todo description can change', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const created = await createTodo(newTodo);
+    const patchData = { description: 'a new description' };
+    const updated = await updateTodo(created.id, patchData);
+    expect(updated?.description).toEqual('a new description');
+    expect(updated?.isComplete).to.be.false;
+  });
 });
