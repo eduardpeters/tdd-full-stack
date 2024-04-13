@@ -37,6 +37,10 @@ export class FakeTodoRepository {
     return this.todos[todoToUpdateIndex];
   }
 
+  delete(id: number) {
+    this.todos = this.todos.filter((todo) => todo.id !== id);
+  }
+
   truncate() {
     this.todos = [];
   }

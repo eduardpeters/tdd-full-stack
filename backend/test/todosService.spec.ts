@@ -4,6 +4,7 @@ import {
   createTodo,
   getTodoById,
   updateTodo,
+  deleteTodoById,
 } from '../src/todosService';
 
 describe('Todos service', () => {
@@ -43,5 +44,16 @@ describe('Todos service', () => {
     const updated = await updateTodo(created.id, patchData);
     expect(updated?.description).toEqual('a new description');
     expect(updated?.isComplete).to.be.false;
+  });
+
+  test('A specific todo can be deleted', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const created = await createTodo(newTodo);
+    let allTodos = await getAllTodos();
+    const previousLength = allTodos.length;
+    await deleteTodoById(created.id);
+    allTodos = await getAllTodos();
+    expect(allTodos.length).toEqual(previousLength - 1);
+    expect(allTodos).to.not.contain(created);
   });
 });

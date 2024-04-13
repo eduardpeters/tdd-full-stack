@@ -21,3 +21,7 @@ export async function updateTodo(
 ): Promise<Todo | undefined> {
   return todoRepository.update(id, data);
 }
+
+export async function deleteTodoById(id: number): Promise<void> {
+  return todoRepository.delete(id);
+}
