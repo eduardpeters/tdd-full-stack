@@ -1,58 +1,60 @@
-import { beforeEach, describe, expect, test } from 'vitest';
-import {
-  getAllTodos,
-  createTodo,
-  getTodoById,
-  updateTodo,
-  deleteTodoById,
-} from '../src/todosService';
+import { beforeAll, describe, expect, test } from 'vitest';
+import { TodosService } from '../src/TodosService';
+import { FakeTodoRepository } from '../src/FakeTodosRepository';
 
 describe('Todos service', () => {
+  let todosService;
+
+  beforeAll(() => {
+    const repository = new FakeTodoRepository();
+    todosService = new TodosService(repository);
+  });
+
   test('Empty array is returned when there are no todos', async () => {
-    expect(await getAllTodos()).toEqual([]);
+    expect(await todosService.getAll()).toEqual([]);
   });
 
   test('A todo can be added', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
-    expect(await createTodo(newTodo)).toHaveProperty('id');
+    expect(await todosService.create(newTodo)).toHaveProperty('id');
   });
 
   test('When a todo exists, it is returned when getting all', async () => {
-    expect(await getAllTodos()).toHaveLength(1);
+    expect(await todosService.getAll()).toHaveLength(1);
   });
 
   test('A specific todo can be retrieved', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
-    const created = await createTodo(newTodo);
-    const found = await getTodoById(created.id);
+    const created = await todosService.create(newTodo);
+    const found = await todosService.getById(created.id);
     expect(found?.description).toEqual('a new todo');
   });
 
   test('A specific todo can be completed', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
-    const created = await createTodo(newTodo);
+    const created = await todosService.create(newTodo);
     const patchData = { isComplete: true };
-    const updated = await updateTodo(created.id, patchData);
+    const updated = await todosService.update(created.id, patchData);
     expect(updated?.description).toEqual('a new todo');
     expect(updated?.isComplete).to.be.true;
   });
 
   test('A specific todo description can change', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
-    const created = await createTodo(newTodo);
+    const created = await todosService.create(newTodo);
     const patchData = { description: 'a new description' };
-    const updated = await updateTodo(created.id, patchData);
+    const updated = await todosService.update(created.id, patchData);
     expect(updated?.description).toEqual('a new description');
     expect(updated?.isComplete).to.be.false;
   });
 
   test('A specific todo can be deleted', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
-    const created = await createTodo(newTodo);
-    let allTodos = await getAllTodos();
+    const created = await todosService.create(newTodo);
+    let allTodos = await todosService.getAll();
     const previousLength = allTodos.length;
-    await deleteTodoById(created.id);
-    allTodos = await getAllTodos();
+    await todosService.deleteById(created.id);
+    allTodos = await todosService.getAll();
     expect(allTodos.length).toEqual(previousLength - 1);
     expect(allTodos).to.not.contain(created);
   });
