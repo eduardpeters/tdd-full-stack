@@ -35,4 +35,17 @@ describe('Todos repository', () => {
     expect(created.description).toBe('a new todo');
     expect(created.isComplete).toBe(false);
   });
+
+  test('A populated table returns an array of todos', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    await repository.create(newTodo);
+    let todos = await repository.getAll();
+    expect(todos).toHaveLength(1);
+    await repository.create(newTodo);
+    todos = await repository.getAll();
+    expect(todos).toHaveLength(2);
+    expect(todos[0]).toHaveProperty('id');
+    expect(todos[0]).toHaveProperty('description');
+    expect(todos[0]).toHaveProperty('isComplete');
+  });
 });

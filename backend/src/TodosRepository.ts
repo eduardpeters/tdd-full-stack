@@ -25,7 +25,7 @@ export class TodosRepository {
   async getAll() {
     const queryText = 'SELECT id, description, is_complete FROM todos;';
     const result = await this.db.query(queryText);
-    return result.rows;
+    return result.rows.map((todo) => this.toCamelCase(todo));
   }
 
   getById(id: number) {
