@@ -49,12 +49,17 @@ describe('Todos repository', () => {
     expect(todos[0]).toHaveProperty('isComplete');
   });
 
+  test('No todo is retrieved when searching for a invalid id', async () => {
+    const result = await repository.getById(123);
+    expect(result).toBeUndefined();
+  });
+
   test('A single todo can be retrieved by id', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
     const result = await repository.create(newTodo);
     const retrieved = await repository.getById(result.id);
-    expect(retrieved.id).toEqual(result.id);
-    expect(retrieved.description).toEqual(result.description);
-    expect(retrieved.isComplete).toEqual(result.isComplete);
+    expect(retrieved?.id).toEqual(result.id);
+    expect(retrieved?.description).toEqual(result.description);
+    expect(retrieved?.isComplete).toEqual(result.isComplete);
   });
 });

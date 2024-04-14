@@ -28,11 +28,13 @@ export class TodosRepository {
     return result.rows.map((todo) => this.toCamelCase(todo));
   }
 
-  async getById(id: number) {
+  async getById(id: number): Promise<Todo | undefined> {
     const queryText =
       'SELECT id, description, is_complete FROM todos WHERE id = $1';
     const result = await this.db.query(queryText, [id]);
-    return this.toCamelCase(result.rows[0]);
+    if (result.rows.length > 0) {
+      return this.toCamelCase(result.rows[0]);
+    }
   }
 
   async create(newTodo: NewTodoDto) {
