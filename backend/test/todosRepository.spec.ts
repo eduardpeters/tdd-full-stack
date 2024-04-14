@@ -17,11 +17,18 @@ describe('Todos repository', () => {
     const result = await client.query(
       'CREATE TABLE IF NOT EXISTS todos (id serial, description VARCHAR(255), is_complete boolean);'
     );
-    console.log(result.rows);
     repository = new TodosRepository(client);
   });
 
   test('Empty table returns empty array', async () => {
     expect(await repository.getAll()).toEqual([]);
+  });
+
+  test('A todo can be created', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const created = await repository.create(newTodo);
+    expect(created).toHaveProperty('id');
+    expect(created.description).toBe('a new todo');
+    expect(created.isComplete).toBe(false);
   });
 });

@@ -1,6 +1,12 @@
 import pg from 'pg';
 import { NewTodoDto, Todo, UpdateTodoDto } from './types';
 
+interface TodoResult {
+  id: number;
+  description: string;
+  is_complete: boolean;
+}
+
 export class TodosRepository {
   db: pg.Client;
 
@@ -8,8 +14,16 @@ export class TodosRepository {
     this.db = db;
   }
 
+  toCamelCase(result: TodoResult): Todo {
+    return {
+      id: result.id,
+      description: result.description,
+      isComplete: result.is_complete,
+    };
+  }
+
   async getAll() {
-    const queryText = 'SELECT (id, description, is_complete) FROM todos;';
+    const queryText = 'SELECT id, description, is_complete FROM todos;';
     const result = await this.db.query(queryText);
     return result.rows;
   }
@@ -18,8 +32,14 @@ export class TodosRepository {
     return;
   }
 
-  create(newTodo: NewTodoDto) {
-    return;
+  async create(newTodo: NewTodoDto) {
+    const queryText =
+      'INSERT INTO todos (description, is_complete) VALUES ($1, $2) RETURNING id, description, is_complete;';
+    const result = await this.db.query(queryText, [
+      newTodo.description,
+      newTodo.isComplete,
+    ]);
+    return this.toCamelCase(result.rows[0]);
   }
 
   update(id: number, data: UpdateTodoDto) {
