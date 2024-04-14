@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, afterEach, describe, expect, test } from 'vitest';
 import { TodosRepository } from '../src/TodosRepository';
 
 describe('Todos repository', () => {
@@ -14,10 +14,14 @@ describe('Todos repository', () => {
       port: process.env.PGPORT as unknown as number,
     });
     await client.connect();
-    const result = await client.query(
+    await client.query(
       'CREATE TABLE IF NOT EXISTS todos (id serial, description VARCHAR(255), is_complete boolean);'
     );
     repository = new TodosRepository(client);
+  });
+
+  afterEach(async () => {
+    await repository.truncate();
   });
 
   test('Empty table returns empty array', async () => {

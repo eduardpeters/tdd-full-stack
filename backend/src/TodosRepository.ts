@@ -50,7 +50,8 @@ export class TodosRepository {
     return;
   }
 
-  truncate() {
-    return;
+  async truncate(): Promise<void> {
+    const queryText = 'TRUNCATE TABLE todos;';
+    await this.db.query(queryText);
   }
 }
