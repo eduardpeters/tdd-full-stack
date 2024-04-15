@@ -47,7 +47,7 @@ export class TodosRepository {
     return this.toCamelCase(result.rows[0]);
   }
 
-  async update(id: number, data: UpdateTodoDto) {
+  async update(id: number, data: UpdateTodoDto): Promise<Todo | undefined> {
     let queryText = 'UPDATE todos SET ';
     let values: any[] = [id];
     if (data.description && data.isComplete !== undefined) {
@@ -62,7 +62,9 @@ export class TodosRepository {
     }
     queryText += ' WHERE id = $1 RETURNING *';
     const result = await this.db.query(queryText, values);
-    return this.toCamelCase(result.rows[0]);
+    if (result.rows.length > 0) {
+      return this.toCamelCase(result.rows[0]);
+    }
   }
 
   delete(id: number) {
