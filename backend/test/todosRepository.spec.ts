@@ -62,4 +62,14 @@ describe('Todos repository', () => {
     expect(retrieved?.description).toEqual(result.description);
     expect(retrieved?.isComplete).toEqual(result.isComplete);
   });
+
+  test('A single todo can be updated by id', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const result = await repository.create(newTodo);
+    const newData = { description: 'just completed', isComplete: true };
+    const updated = await repository.update(result.id, newData);
+    expect(updated?.id).toEqual(result.id);
+    expect(updated?.description).toEqual('just completed');
+    expect(updated?.isComplete).toEqual(true);
+  });
 });

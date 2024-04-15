@@ -47,8 +47,22 @@ export class TodosRepository {
     return this.toCamelCase(result.rows[0]);
   }
 
-  update(id: number, data: UpdateTodoDto) {
-    return;
+  async update(id: number, data: UpdateTodoDto) {
+    let queryText = 'UPDATE todos SET ';
+    let values: any[] = [id];
+    if (data.description && data.isComplete !== undefined) {
+      queryText += 'description = $2, is_complete = $3';
+      values.push(data.description, data.isComplete);
+    } else if (data.description && data.isComplete === undefined) {
+      queryText += 'description = $2';
+      values.push(data.description);
+    } else {
+      queryText += 'is_complete = $2';
+      values.push(data.isComplete);
+    }
+    queryText += ' WHERE id = $1 RETURNING *';
+    const result = await this.db.query(queryText, values);
+    return this.toCamelCase(result.rows[0]);
   }
 
   delete(id: number) {
