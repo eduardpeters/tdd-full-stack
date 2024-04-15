@@ -1,12 +1,26 @@
+import pg from 'pg';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { TodosService } from '../src/TodosService';
 import { FakeTodoRepository } from '../src/FakeTodosRepository';
+import { TodosRepository } from '../src/TodosRepository';
 
 describe('Todos service', () => {
-  let todosService;
+  let todosService: TodosService;
 
-  beforeAll(() => {
-    const repository = new FakeTodoRepository();
+  beforeAll(async () => {
+    //const repository = new FakeTodoRepository();
+    const { Client } = pg;
+    const client = new Client({
+      user: process.env.VITE_PGUSER,
+      password: process.env.VITE_PGPASSWORD,
+      host: process.env.PGHOST,
+      port: process.env.PGPORT as unknown as number,
+    });
+    await client.connect();
+    await client.query(
+      'CREATE TABLE IF NOT EXISTS todos (id serial, description VARCHAR(255), is_complete boolean);'
+    );
+    const repository = new TodosRepository(client);
     todosService = new TodosService(repository);
   });
 

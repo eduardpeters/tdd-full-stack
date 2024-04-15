@@ -1,12 +1,13 @@
 import { FakeTodoRepository } from './FakeTodosRepository';
+import { TodosRepository } from './TodosRepository';
 import { NewTodoDto, Todo } from './types';
 
 const todoRepository = new FakeTodoRepository();
 
 export class TodosService {
-  repository: FakeTodoRepository;
+  repository: FakeTodoRepository | TodosRepository;
 
-  constructor(repository: FakeTodoRepository) {
+  constructor(repository: FakeTodoRepository | TodosRepository) {
     this.repository = repository;
   }
 
