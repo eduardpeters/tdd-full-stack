@@ -67,8 +67,9 @@ export class TodosRepository {
     }
   }
 
-  delete(id: number) {
-    return;
+  async delete(id: number): Promise<void> {
+    const queryText = 'DELETE FROM todos WHERE id = $1';
+    await this.db.query(queryText, [id]);
   }
 
   async truncate(): Promise<void> {

@@ -100,4 +100,24 @@ describe('Todos repository', () => {
     const confirmResult = await repository.getById(result.id);
     expect(confirmResult).to.deep.equal(result);
   });
+
+  test('A todo can be deleted by id', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const result = await repository.create(newTodo);
+    let allTodos = await repository.getAll();
+    expect(allTodos).toHaveLength(1);
+    await repository.delete(result.id);
+    allTodos = await repository.getAll();
+    expect(allTodos).toHaveLength(0);
+  });
+
+  test('No todo is deleted if id is not valid', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const result = await repository.create(newTodo);
+    let allTodos = await repository.getAll();
+    expect(allTodos).toHaveLength(1);
+    await repository.delete(result.id + 42);
+    allTodos = await repository.getAll();
+    expect(allTodos).toHaveLength(1);
+  });
 });
