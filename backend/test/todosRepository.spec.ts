@@ -73,6 +73,24 @@ describe('Todos repository', () => {
     expect(updated?.isComplete).toEqual(true);
   });
 
+  test('A single todo description can be updated by id', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const result = await repository.create(newTodo);
+    const newData = { description: 'just completed' };
+    const updated = await repository.update(result.id, newData);
+    expect(updated?.id).toEqual(result.id);
+    expect(updated?.description).toEqual('just completed');
+  });
+
+  test('A single todo completeness can be updated by id', async () => {
+    const newTodo = { description: 'a new todo', isComplete: false };
+    const result = await repository.create(newTodo);
+    const newData = { isComplete: true };
+    const updated = await repository.update(result.id, newData);
+    expect(updated?.id).toEqual(result.id);
+    expect(updated?.isComplete).toEqual(true);
+  });
+
   test('No todo is updated when using an invalid id', async () => {
     const newTodo = { description: 'a new todo', isComplete: false };
     const result = await repository.create(newTodo);
