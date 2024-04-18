@@ -36,6 +36,10 @@ app.post('/todos', async (req: Request, res: Response) => {
   return todosController.create(req, res);
 });
 
+app.patch('/todos/:id', async (req: Request, res: Response) => {
+  return todosController.updateById(req, res);
+});
+
 app.delete('/todos/:id', async (req: Request, res: Response) => {
   return todosController.deleteById(req, res);
 });

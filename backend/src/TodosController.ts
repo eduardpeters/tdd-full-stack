@@ -29,8 +29,26 @@ export class TodosController {
     return res.status(200).send(newTodo);
   }
 
+  async updateById(req: Request, res: Response) {
+    const { id } = req.params;
+    if (
+      req.body === undefined ||
+      (req.body.description === undefined && req.body.isComplete === undefined)
+    ) {
+      return res.status(400).end();
+    }
+    const { description, isComplete } = req.body;
+    const updatedTodo = await this.todosService.update(parseInt(id), {
+      description,
+      isComplete,
+    });
+    if (updatedTodo === undefined) {
+      return res.status(400).end();
+    }
+    return res.status(200).send(updatedTodo);
+  }
+
   async deleteById(req: Request, res: Response) {
-    console.log(req.params);
     const { id } = req.params;
     await this.todosService.deleteById(parseInt(id));
     return res.status(204).end();
