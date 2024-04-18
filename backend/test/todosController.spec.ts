@@ -7,18 +7,29 @@ import request from 'supertest';
 import { app } from '../src/index';
 
 describe('Todos controller', () => {
-  let todosController: TodosController;
-
-  beforeAll(() => {
-    const todosRepository = new FakeTodoRepository();
-    const todosService = new TodosService(todosRepository);
-    todosController = new TodosController(todosService);
-  });
-
-  test('Todos are available on /todos', async () => {
+  test('Todos are available on GET /todos', async () => {
     const response = await request(app).get('/todos');
-    console.log(response.status, response.body);
     expect(response.status).toBe(200);
     expect(response.body).toBeDefined();
+    expect(response.body).toHaveLength(0);
+  });
+
+  test('An empty body returns 400 at POST /todo', async () => {
+    const response = await request(app).post('/todos');
+    expect(response.status).toBe(400);
+  });
+
+  test('Sending no description in body returns 400 at POST /todo', async () => {
+    const response = await request(app)
+      .post('/todos')
+      .send({ isComplete: false });
+    expect(response.status).toBe(400);
+  });
+
+  test('Sending empty description string in body returns 400 at POST /todo', async () => {
+    const response = await request(app)
+      .post('/todos')
+      .send({ isComplete: false, description: '' });
+    expect(response.status).toBe(400);
   });
 });

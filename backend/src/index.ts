@@ -22,12 +22,18 @@ if (process.env.NODE_ENV !== 'test') {
 const todosService = new TodosService(todosRepository);
 const todosController = new TodosController(todosService);
 
+app.use(express.json());
+
 app.get('/', async (req: Request, res: Response) => {
   res.send(`Hello from TypeScript Express!`);
 });
 
 app.get('/todos', async (req: Request, res: Response) => {
   return todosController.getAll(req, res);
+});
+
+app.post('/todos', async (req: Request, res: Response) => {
+  return todosController.create(req, res);
 });
 
 app.listen(port, () => {
