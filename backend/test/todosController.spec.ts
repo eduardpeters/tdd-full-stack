@@ -1,8 +1,4 @@
-import { beforeEach } from 'node:test';
-import { beforeAll, afterEach, describe, expect, test } from 'vitest';
-import { TodosController } from '../src/TodosController';
-import { TodosService } from '../src/TodosService';
-import { FakeTodoRepository } from '../src/FakeTodosRepository';
+import { describe, expect, test } from 'vitest';
 import request from 'supertest';
 import { app } from '../src/index';
 
@@ -51,5 +47,40 @@ describe('Todos controller', () => {
     expect(response.body).toHaveProperty('id');
     expect(response.body.description).toEqual('my new todo');
     expect(response.body.isComplete).toBe(false);
+  });
+
+  test('Todos are available on GET /todos', async () => {
+    const response = await request(app).get('/todos');
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(response.body.length).toBeGreaterThan(0);
+  });
+
+  test('An invalid todo id has no effect on DELETE /todos/:id', async () => {
+    const todosResponse = await request(app).get('/todos');
+    expect(todosResponse.body.length).toBeGreaterThan(0);
+    const deleteResponse = await request(app).delete('/todos/123');
+    expect(deleteResponse.status).toBe(204);
+    const todosConfirmation = await request(app).get('/todos');
+    expect(todosConfirmation.body.length).toEqual(todosResponse.body.length);
+  });
+
+  test('An invalid todo id has no effect on DELETE /todos/:id', async () => {
+    const todosResponse = await request(app).get('/todos');
+    expect(todosResponse.body.length).toBeGreaterThan(0);
+    const response = await request(app)
+      .post('/todos')
+      .send({ isComplete: false, description: 'my new todo' });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    const deleteResponse = await request(app).delete(
+      `/todos/${response.body.id}`
+    );
+    expect(deleteResponse.status).toBe(204);
+    const todosConfirmation = await request(app).get('/todos');
+    expect(todosConfirmation.body.length).toEqual(todosResponse.body.length);
+    expect(
+      todosConfirmation.body.some((todo) => todo.id === response.body.id)
+    ).toBe(false);
   });
 });

@@ -36,6 +36,10 @@ app.post('/todos', async (req: Request, res: Response) => {
   return todosController.create(req, res);
 });
 
+app.delete('/todos/:id', async (req: Request, res: Response) => {
+  return todosController.deleteById(req, res);
+});
+
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });

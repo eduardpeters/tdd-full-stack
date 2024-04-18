@@ -28,4 +28,11 @@ export class TodosController {
     const newTodo = await this.todosService.create({ description, isComplete });
     return res.status(200).send(newTodo);
   }
+
+  async deleteById(req: Request, res: Response) {
+    console.log(req.params);
+    const { id } = req.params;
+    await this.todosService.deleteById(parseInt(id));
+    return res.status(204).end();
+  }
 }
