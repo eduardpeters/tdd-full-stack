@@ -8,18 +8,14 @@ import { TodosController } from './TodosController';
 export const app = express();
 const port = process.env.PORT || 3000;
 
-const { Client } = pg;
-const client = new Client();
+let todosRepository: TodosRepository | FakeTodoRepository;
 
-async function getConnection() {
-  await client.connect();
-}
-
-let todosRepository: FakeTodoRepository | TodosRepository;
 if (process.env.NODE_ENV !== 'test') {
-  getConnection().then(() => {
-    todosRepository = new TodosRepository(client);
-  });
+  const { Client } = pg;
+  const client = new Client();
+  await client.connect();
+
+  todosRepository = new TodosRepository(client);
 } else {
   todosRepository = new FakeTodoRepository();
 }
@@ -27,9 +23,7 @@ const todosService = new TodosService(todosRepository);
 const todosController = new TodosController(todosService);
 
 app.get('/', async (req: Request, res: Response) => {
-  const result = await client.query('SELECT NOW()');
-  console.log(result);
-  res.send(`Hello from TypeScript Express! ${result.rowCount}`);
+  res.send(`Hello from TypeScript Express!`);
 });
 
 app.get('/todos', async (req: Request, res: Response) => {
