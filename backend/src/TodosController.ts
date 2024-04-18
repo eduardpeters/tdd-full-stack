@@ -16,7 +16,6 @@ export class TodosController {
   }
 
   async create(req: Request, res: Response) {
-    console.log(req.body);
     if (req.body === undefined || req.body.description === undefined) {
       return res.status(400).end();
     }
@@ -25,6 +24,8 @@ export class TodosController {
     if (description.length < 1) {
       return res.status(400).end();
     }
-    return res.status(200).send();
+
+    const newTodo = await this.todosService.create({ description, isComplete });
+    return res.status(200).send(newTodo);
   }
 }

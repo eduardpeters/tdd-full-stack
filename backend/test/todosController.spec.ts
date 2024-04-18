@@ -32,4 +32,24 @@ describe('Todos controller', () => {
       .send({ isComplete: false, description: '' });
     expect(response.status).toBe(400);
   });
+
+  test('A new todo is created at POST /todo', async () => {
+    const response = await request(app)
+      .post('/todos')
+      .send({ isComplete: false, description: 'my new todo' });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.description).toEqual('my new todo');
+    expect(response.body.isComplete).toBe(false);
+  });
+
+  test('A new todo defaults to not complete when created at POST /todo', async () => {
+    const response = await request(app)
+      .post('/todos')
+      .send({ description: 'my new todo' });
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.description).toEqual('my new todo');
+    expect(response.body.isComplete).toBe(false);
+  });
 });
