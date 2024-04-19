@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   frontend:
     build:
@@ -7,6 +7,8 @@ services:
     image: webapp-frontend
     ports:
       - 5173:5173
+    depends_on:
+      - backend
 
   backend:
     build:
@@ -21,8 +23,10 @@ services:
       - PGPORT=5432
     ports:
       - 4242:4242
+    restart: on-failure
     depends_on:
-      - db
+      db:
+        condition: service_started
 
   db:
     image: postgres:latest
@@ -31,5 +35,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     mem_reservation: 100m
     mem_limit: 200m
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432

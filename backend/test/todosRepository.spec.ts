@@ -14,9 +14,6 @@ describe('Todos repository', () => {
       port: process.env.PGPORT as unknown as number,
     });
     await client.connect();
-    await client.query(
-      'CREATE TABLE IF NOT EXISTS todos (id serial, description VARCHAR(255), is_complete boolean);'
-    );
     repository = new TodosRepository(client);
   });
 
