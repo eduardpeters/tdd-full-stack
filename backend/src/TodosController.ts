@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { TodosService } from './TodosService';
+import { TodosService } from './TodosService.js';
 import { NewTodoDto } from './types';
 
 export class TodosController {

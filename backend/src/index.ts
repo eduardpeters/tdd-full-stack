@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
 import pg from 'pg';
-import { FakeTodoRepository } from './FakeTodosRepository';
-import { TodosRepository } from './TodosRepository';
-import { TodosService } from './TodosService';
-import { TodosController } from './TodosController';
+import { FakeTodoRepository } from './FakeTodosRepository.js';
+import { TodosRepository } from './TodosRepository.js';
+import { TodosService } from './TodosService.js';
+import { TodosController } from './TodosController.js';
 
 export const app = express();
 const port = process.env.PORT || 3000;

@@ -1,5 +1,5 @@
-import { FakeTodoRepository } from './FakeTodosRepository';
-import { TodosRepository } from './TodosRepository';
+import { FakeTodoRepository } from './FakeTodosRepository.js';
+import { TodosRepository } from './TodosRepository.js';
 import { NewTodoDto, Todo } from './types';
 
 const todoRepository = new FakeTodoRepository();
