@@ -7,4 +7,10 @@ describe('Todos list component', () => {
     const { getByTestId } = render(<TodosList />);
     expect(getByTestId('todos-list')).toHaveTextContent('No todos yet...');
   });
+
+  test('It renders a list with todos', () => {
+    const { getByTestId } = render(<TodosList />);
+    expect(getByTestId('todos-list').children.length).toBeGreaterThan(0);
+    expect(getByTestId('todos-list')).not.toHaveTextContent('No todos yet...');
+  });
 });
