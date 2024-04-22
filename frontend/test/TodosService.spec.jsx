@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { getAllTodos } from '../src/services/TodosService.ts';
 
+// eslint-disable-next-line no-undef
 global.fetch = vi.fn();
 
 function createFetchResponse(data) {
@@ -9,6 +10,7 @@ function createFetchResponse(data) {
 
 describe('Todos service', () => {
   beforeEach(() => {
+    // eslint-disable-next-line no-undef
     global.fetch.mockReset();
   });
 
