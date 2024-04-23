@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
   createTodo,
+  deleteTodo,
   getAllTodos,
   updateTodo,
 } from '../src/services/TodosService.ts';
@@ -177,5 +178,31 @@ describe('Todos service', () => {
       }
     );
     expect(todo).to.deep.equal(todoResponse);
+  });
+
+  test('Returns an error when delete request encountered server issues', async () => {
+    const id = 42;
+    const todo = await deleteTodo(id);
+
+    expect(todo).toHaveProperty('error');
+  });
+
+  test('Returns an error when request is sent without id', async () => {
+    const todos = await deleteTodo();
+
+    expect(todos).toHaveProperty('error');
+  });
+
+  test('Deletion returns an empty object on success', async () => {
+    fetch.mockResolvedValue(createFetchResponse({}));
+    const id = 42;
+    const todo = await deleteTodo(id);
+    expect(fetch).toHaveBeenCalledWith(
+      `${import.meta.env.VITE_BASE_URL}/${id}`,
+      {
+        method: 'DELETE',
+      }
+    );
+    expect(todo).to.deep.equal({});
   });
 });

@@ -97,3 +97,28 @@ export async function updateTodo(
     return { error: message };
   }
 }
+
+export async function deleteTodo(id: number): Promise<Todo | ResponseError> {
+  if (id === undefined) {
+    return { error: 'Incomplete request data' };
+  }
+  const url = `${baseUrl}/${id}`;
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const todos = await response.json();
+    return todos;
+  } catch (e) {
+    let message;
+    if (e instanceof Error) {
+      message = e.message;
+    } else {
+      message = String(e);
+    }
+    return { error: message };
+  }
+}
