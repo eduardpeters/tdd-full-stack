@@ -59,15 +59,81 @@ describe('Todos service', () => {
     expect(todos).toHaveProperty('error');
   });
 
-  test('Returns an error when no update can be done', async () => {
+  test('Returns an error when request fails', async () => {
+    const todos = await updateTodo(42, { isComplete: true });
+
+    expect(todos).toHaveProperty('error');
+  });
+
+  test('Returns the updated todo with description when sucessful', async () => {
     const todoResponse = {
       id: 1,
       description: 'First todo',
       isComplete: false,
     };
     fetch.mockResolvedValue(createFetchResponse(todoResponse));
-    const todos = await updateTodo();
+    const id = todoResponse.id;
+    const data = { description: 'First todo' };
+    const todo = await updateTodo(id, data);
 
-    expect(todos).toHaveProperty('error');
+    expect(fetch).toHaveBeenCalledWith(
+      `${import.meta.env.VITE_BASE_URL}/${id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    expect(todo).to.deep.equal(todoResponse);
+  });
+
+  test('Returns the updated todo with new status when sucessful', async () => {
+    const todoResponse = {
+      id: 1,
+      description: 'First todo',
+      isComplete: true,
+    };
+    fetch.mockResolvedValue(createFetchResponse(todoResponse));
+    const id = todoResponse.id;
+    const data = { isComplete: true };
+    const todo = await updateTodo(id, data);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `${import.meta.env.VITE_BASE_URL}/${id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    expect(todo).to.deep.equal(todoResponse);
+  });
+
+  test('Returns the updated todo with all fields updated when sucessful', async () => {
+    const todoResponse = {
+      id: 1,
+      description: 'First todo',
+      isComplete: true,
+    };
+    fetch.mockResolvedValue(createFetchResponse(todoResponse));
+    const id = todoResponse.id;
+    const data = { description: 'First todo', isComplete: true };
+    const todo = await updateTodo(id, data);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `${import.meta.env.VITE_BASE_URL}/${id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    expect(todo).to.deep.equal(todoResponse);
   });
 });

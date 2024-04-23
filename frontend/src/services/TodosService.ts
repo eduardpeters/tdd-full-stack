@@ -32,8 +32,23 @@ export async function updateTodo(
   ) {
     return { error: 'Incomplete request data' };
   }
+  const url = `${baseUrl}/${id}`;
+  const { description, isComplete } = data;
+  const payload: TodoDto = {};
+  if (description) {
+    payload.description = description;
+  }
+  if (isComplete !== undefined) {
+    payload.isComplete = isComplete;
+  }
   try {
-    const response = await fetch(baseUrl);
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
     if (!response.ok) {
       throw new Error(response.statusText);
     }
