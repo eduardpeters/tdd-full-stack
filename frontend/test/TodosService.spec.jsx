@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { getAllTodos, updateTodo } from '../src/services/TodosService.ts';
+import {
+  createTodo,
+  getAllTodos,
+  updateTodo,
+} from '../src/services/TodosService.ts';
 
 // eslint-disable-next-line no-undef
 global.fetch = vi.fn();
@@ -39,6 +43,44 @@ describe('Todos service', () => {
 
     expect(fetch).toHaveBeenCalledWith(import.meta.env.VITE_BASE_URL);
     expect(todos).toHaveLength(2);
+  });
+
+  test('Returns an error when no data is provided', async () => {
+    const todo = await createTodo();
+
+    expect(todo).toHaveProperty('error');
+  });
+
+  test('Returns an error when empty data is provided', async () => {
+    const todo = await createTodo({});
+
+    expect(todo).toHaveProperty('error');
+  });
+
+  test('Returns an error when incomplete data is provided', async () => {
+    const todo = await createTodo({ isComplete: true });
+
+    expect(todo).toHaveProperty('error');
+  });
+
+  test('Returns the new todo when sucessful', async () => {
+    const todoResponse = {
+      id: 1,
+      description: 'First todo',
+      isComplete: false,
+    };
+    fetch.mockResolvedValue(createFetchResponse(todoResponse));
+    const data = { description: 'First todo', isComplete: false };
+    const todo = await createTodo(data);
+
+    expect(fetch).toHaveBeenCalledWith(`${import.meta.env.VITE_BASE_URL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    expect(todo).to.deep.equal(todoResponse);
   });
 
   test('Returns an error when no parameters are provided', async () => {

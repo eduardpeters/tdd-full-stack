@@ -21,6 +21,39 @@ export async function getAllTodos(): Promise<Todo[] | ResponseError> {
   }
 }
 
+export async function createTodo(data: TodoDto): Promise<Todo | ResponseError> {
+  if (!data || (!data.description && data.isComplete === undefined)) {
+    return { error: 'Incomplete request data' };
+  }
+  const url = `${baseUrl}`;
+  const payload = {
+    description: data.description,
+    isComplete: data.isComplete,
+  };
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const todos = await response.json();
+    return todos;
+  } catch (e) {
+    let message;
+    if (e instanceof Error) {
+      message = e.message;
+    } else {
+      message = String(e);
+    }
+    return { error: message };
+  }
+}
+
 export async function updateTodo(
   id: number,
   data: TodoDto
