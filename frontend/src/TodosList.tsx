@@ -1,14 +1,18 @@
-import { useState } from 'react';
-import { Todo } from './types.ts';
+import useTodos from './hooks/useTodos.tsx';
 
 export default function TodosList() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [error, setError] = useState<boolean>(false);
+  const [todos, error] = useTodos();
 
   return (
     <main data-testid="todos-list">
-      {error && <span>Oh no, something bad happened</span>}
-      {todos.length > 0 ? <span>todo</span> : <span>No todos yet...</span>}
+      {error !== undefined && (
+        <span data-testid="error-message">{`Oh no, something bad happened: ${error}`}</span>
+      )}
+      {todos && todos?.length > 0 ? (
+        <span>todo</span>
+      ) : (
+        <span>No todos yet...</span>
+      )}
     </main>
   );
 }
