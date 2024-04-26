@@ -21,5 +21,5 @@ export default function useTodos() {
     }
   });
 
-  return [todos, error];
+  return [todos, error] as const;
 }
