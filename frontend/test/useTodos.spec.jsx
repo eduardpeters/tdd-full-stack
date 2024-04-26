@@ -21,7 +21,8 @@ describe('useTodos hook', () => {
     const [todos, error] = result.current;
 
     expect(todos).toBe(undefined);
-    expect(error).toBe(true);
+    expect(error).toBeDefined();
+    expect(error).toBeTypeOf('string');
   });
 
   test('An empty array is returned if there are no todos', async () => {
@@ -31,7 +32,7 @@ describe('useTodos hook', () => {
     const [todos, error] = result.current;
 
     expect(todos).to.deep.equal([]);
-    expect(error).toBe(false);
+    expect(error).toBeUndefined();
   });
 
   test('A todos array is returned', async () => {
@@ -44,6 +45,6 @@ describe('useTodos hook', () => {
     const [todos, error] = result.current;
 
     expect(todos).to.deep.equal(mockTodos);
-    expect(error).toBe(false);
+    expect(error).toBeUndefined();
   });
 });

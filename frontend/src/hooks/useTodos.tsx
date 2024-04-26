@@ -4,13 +4,13 @@ import { getAllTodos } from '../services/TodosService.ts';
 
 export default function useTodos() {
   const [todos, setTodos] = useState<Todo[] | undefined>(undefined);
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     async function getTodos() {
       const response = await getAllTodos();
       if ('error' in response) {
-        setError(true);
+        setError(response.error);
       } else {
         setTodos(response);
       }
