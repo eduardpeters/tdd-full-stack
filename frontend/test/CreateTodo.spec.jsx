@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import CreateTodo from '../src/components/CreateTodo.tsx';
 
 // eslint-disable-next-line no-undef
@@ -8,6 +8,8 @@ global.fetch = vi.fn();
 function createFetchResponse(data, isOk = true) {
   return { json: () => new Promise((resolve) => resolve(data)), ok: isOk };
 }
+
+const BASE_URL = `${import.meta.env.VITE_BASE_URL}/todos`;
 
 describe('Todos list component', () => {
   afterEach(() => {
@@ -26,21 +28,30 @@ describe('Todos list component', () => {
     expect(getByTestId('submit-button')).toBeInTheDocument();
   });
 
-  test.skip('It renders an empty list message if no todos are available', async () => {
-    const mockTodos = [];
-    fetch.mockResolvedValue(createFetchResponse(mockTodos));
-    const { getByTestId } = await waitFor(() => render(<TodosList />));
-    expect(getByTestId('todos-list')).toHaveTextContent('No todos yet...');
+  test('It does not submit if description is empty', async () => {
+    const { getByTestId } = await waitFor(() => render(<CreateTodo />));
+    fireEvent(getByTestId('submit-button'), new MouseEvent('click'));
+    expect(fetch).not.toHaveBeenCalled();
   });
 
-  test.skip('It renders a list with todos', async () => {
-    const mockTodos = [
+  test('A todo creation request is sent with valid description', async () => {
+    const mockResponse = [
       { id: 1, description: 'First todo', isComplete: false },
-      { id: 2, description: 'Second todo', isComplete: true },
     ];
-    fetch.mockResolvedValue(createFetchResponse(mockTodos));
-    const { getByTestId } = await waitFor(() => render(<TodosList />));
-    expect(getByTestId('todos-list').children.length).toBeGreaterThan(0);
-    expect(getByTestId('todos-list')).not.toHaveTextContent('No todos yet...');
+    fetch.mockResolvedValue(createFetchResponse(mockResponse));
+    const { getByTestId } = await waitFor(() => render(<CreateTodo />));
+
+    fireEvent.change(getByTestId('description-input'), {
+      target: { value: 'First todo' },
+    });
+    fireEvent(getByTestId('submit-button'), new MouseEvent('click'));
+
+    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ description: 'First todo', isComplete: false }),
+    });
   });
 });
