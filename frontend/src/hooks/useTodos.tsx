@@ -19,7 +19,7 @@ export default function useTodos() {
     if (todos === undefined) {
       getTodos();
     }
-  });
+  }, [todos]);
 
-  return [todos, error] as const;
+  return [todos, setTodos, error] as const;
 }

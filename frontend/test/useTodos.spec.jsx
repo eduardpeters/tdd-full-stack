@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import useTodos from '../src/hooks/useTodos.tsx';
 
 // eslint-disable-next-line no-undef
@@ -18,7 +18,7 @@ describe('useTodos hook', () => {
   test('An error is returned if there is no response', async () => {
     fetch.mockResolvedValue(createFetchResponse({}, false));
     const { result } = await waitFor(() => renderHook(() => useTodos()));
-    const [todos, error] = result.current;
+    const [todos, , error] = result.current;
 
     expect(todos).toBe(undefined);
     expect(error).toBeDefined();
@@ -29,7 +29,7 @@ describe('useTodos hook', () => {
     const mockTodos = [];
     fetch.mockResolvedValue(createFetchResponse(mockTodos));
     const { result } = await waitFor(() => renderHook(() => useTodos()));
-    const [todos, error] = result.current;
+    const [todos, , error] = result.current;
 
     expect(todos).to.deep.equal([]);
     expect(error).toBeUndefined();
@@ -42,9 +42,29 @@ describe('useTodos hook', () => {
     ];
     fetch.mockResolvedValue(createFetchResponse(mockTodos));
     const { result } = await waitFor(() => renderHook(() => useTodos()));
-    const [todos, error] = result.current;
+    const [todos, , error] = result.current;
 
     expect(todos).to.deep.equal(mockTodos);
+    expect(error).toBeUndefined();
+  });
+
+  test('A todos array can be updated', async () => {
+    const mockTodos = [
+      { id: 1, description: 'First todo', isComplete: false },
+      { id: 2, description: 'Second todo', isComplete: true },
+    ];
+    fetch.mockResolvedValue(createFetchResponse(mockTodos));
+    const { result } = await waitFor(() => renderHook(() => useTodos()));
+    let [todos, setTodos, error] = result.current;
+
+    const updatedTodos = [
+      { id: 1, description: 'First todo', isComplete: true },
+      { id: 2, description: 'Second todo', isComplete: true },
+    ];
+    act(() => setTodos(updatedTodos));
+    [todos, setTodos, error] = result.current;
+
+    expect(todos).to.deep.equal(updatedTodos);
     expect(error).toBeUndefined();
   });
 });
