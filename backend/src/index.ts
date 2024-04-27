@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import pg from 'pg';
 import { FakeTodoRepository } from './FakeTodosRepository.js';
 import { TodosRepository } from './TodosRepository.js';
@@ -22,6 +23,7 @@ if (process.env.NODE_ENV !== 'test') {
 const todosService = new TodosService(todosRepository);
 const todosController = new TodosController(todosService);
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', async (req: Request, res: Response) => {
