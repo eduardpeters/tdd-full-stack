@@ -1,6 +1,6 @@
 import { ResponseError, Todo, TodoDto } from '../types.ts';
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseUrl = `${import.meta.env.VITE_BASE_URL}/todos`;
 
 export async function getAllTodos(): Promise<Todo[] | ResponseError> {
   try {

@@ -13,6 +13,8 @@ function createFetchResponse(data) {
   return { json: () => new Promise((resolve) => resolve(data)), ok: true };
 }
 
+const BASE_URL = `${import.meta.env.VITE_BASE_URL}/todos`;
+
 describe('Todos service', () => {
   beforeEach(() => {
     // eslint-disable-next-line no-undef
@@ -30,7 +32,7 @@ describe('Todos service', () => {
     fetch.mockResolvedValue(createFetchResponse(todoListResponse));
     const todos = await getAllTodos();
 
-    expect(fetch).toHaveBeenCalledWith(import.meta.env.VITE_BASE_URL);
+    expect(fetch).toHaveBeenCalledWith(BASE_URL);
     expect(todos).toHaveLength(0);
   });
 
@@ -42,7 +44,7 @@ describe('Todos service', () => {
     fetch.mockResolvedValue(createFetchResponse(todoListResponse));
     const todos = await getAllTodos();
 
-    expect(fetch).toHaveBeenCalledWith(import.meta.env.VITE_BASE_URL);
+    expect(fetch).toHaveBeenCalledWith(BASE_URL);
     expect(todos).toHaveLength(2);
   });
 
@@ -74,7 +76,7 @@ describe('Todos service', () => {
     const data = { description: 'First todo', isComplete: false };
     const todo = await createTodo(data);
 
-    expect(fetch).toHaveBeenCalledWith(`${import.meta.env.VITE_BASE_URL}`, {
+    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -119,16 +121,13 @@ describe('Todos service', () => {
     const data = { description: 'First todo' };
     const todo = await updateTodo(id, data);
 
-    expect(fetch).toHaveBeenCalledWith(
-      `${import.meta.env.VITE_BASE_URL}/${id}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
     expect(todo).to.deep.equal(todoResponse);
   });
 
@@ -143,16 +142,13 @@ describe('Todos service', () => {
     const data = { isComplete: true };
     const todo = await updateTodo(id, data);
 
-    expect(fetch).toHaveBeenCalledWith(
-      `${import.meta.env.VITE_BASE_URL}/${id}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
     expect(todo).to.deep.equal(todoResponse);
   });
 
@@ -167,16 +163,13 @@ describe('Todos service', () => {
     const data = { description: 'First todo', isComplete: true };
     const todo = await updateTodo(id, data);
 
-    expect(fetch).toHaveBeenCalledWith(
-      `${import.meta.env.VITE_BASE_URL}/${id}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
     expect(todo).to.deep.equal(todoResponse);
   });
 
@@ -197,12 +190,9 @@ describe('Todos service', () => {
     fetch.mockResolvedValue(createFetchResponse({}));
     const id = 42;
     const todo = await deleteTodo(id);
-    expect(fetch).toHaveBeenCalledWith(
-      `${import.meta.env.VITE_BASE_URL}/${id}`,
-      {
-        method: 'DELETE',
-      }
-    );
+    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/${id}`, {
+      method: 'DELETE',
+    });
     expect(todo).to.deep.equal({});
   });
 });

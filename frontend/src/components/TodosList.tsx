@@ -1,7 +1,7 @@
-import useTodos from './hooks/useTodos.tsx';
+import useTodos from '../hooks/useTodos.tsx';
 
 export default function TodosList() {
-  const [todos, error] = useTodos();
+  const [todos, setTodos, error] = useTodos();
 
   return (
     <main data-testid="todos-list">
