@@ -86,4 +86,23 @@ describe('useTodos hook', () => {
     expect(todos).to.deep.equal([mockTodos[0], todoToUpdate]);
     expect(error).toBeUndefined();
   });
+
+  test('A todo can be deleted', async () => {
+    const mockTodos = [
+      { id: 1, description: 'First todo', isComplete: false },
+      { id: 2, description: 'Second todo', isComplete: true },
+    ];
+    fetch.mockResolvedValue(createFetchResponse(mockTodos));
+    const { result } = await waitFor(() => renderHook(() => useTodos()));
+    let [todos, error, , , deleteTodo] = result.current;
+
+    const idToRemove = 2;
+    fetch.mockResolvedValue(createFetchResponse({}));
+    await waitFor(() => act(() => deleteTodo(idToRemove)));
+    [todos, error] = result.current;
+
+    expect(todos).toHaveLength(1);
+    expect(todos).to.deep.equal([mockTodos[0]]);
+    expect(error).toBeUndefined();
+  });
 });

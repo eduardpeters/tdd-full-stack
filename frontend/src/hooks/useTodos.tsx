@@ -4,6 +4,7 @@ import {
   getAllTodos,
   createTodo,
   updateTodo,
+  deleteTodo,
 } from '../services/TodosService.ts';
 
 export default function useTodos() {
@@ -61,5 +62,17 @@ export default function useTodos() {
     }
   }
 
-  return [todos, error, appendTodo, replaceTodo] as const;
+  async function removeTodo(id: number) {
+    if (id === undefined) {
+      return;
+    }
+    const response = await deleteTodo(id);
+    if ('error' in response) {
+      return response;
+    } else {
+      setTodos(todos!.filter((todo) => todo.id !== id));
+    }
+  }
+
+  return [todos, error, appendTodo, replaceTodo, removeTodo] as const;
 }
