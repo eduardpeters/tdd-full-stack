@@ -1,11 +1,13 @@
-import type { Todo } from '../types.ts';
+import type { ResponseError, Todo } from '../types.ts';
 
 interface TodosListProps {
   todos: Todo[] | undefined;
-  setTodos: React.Dispatch<React.SetStateAction<Todo[] | undefined>>;
   error: string | undefined;
+  updateTodo: (todo: Todo) => Promise<ResponseError | undefined>;
+  deleteTodo: (id: number) => Promise<ResponseError | undefined>;
 }
-export default function TodosList({ todos, setTodos, error }: TodosListProps) {
+
+export default function TodosList({ todos, error }: TodosListProps) {
   return (
     <main data-testid="todos-list">
       {error !== undefined && (

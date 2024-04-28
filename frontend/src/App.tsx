@@ -3,11 +3,16 @@ import TodosList from './components/TodosList.tsx';
 import useTodos from './hooks/useTodos.tsx';
 
 function App() {
-  const [todos, setTodos, error] = useTodos();
+  const [todos, error, createTodo, updateTodo, deleteTodo] = useTodos();
   return (
     <>
-      <CreateTodo appendTodo={() => undefined} />
-      <TodosList todos={todos} setTodos={setTodos} error={error} />
+      <CreateTodo appendTodo={createTodo} />
+      <TodosList
+        todos={todos}
+        error={error}
+        updateTodo={updateTodo}
+        deleteTodo={deleteTodo}
+      />
     </>
   );
 }
