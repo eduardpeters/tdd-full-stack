@@ -1,7 +1,12 @@
 import { FormEvent, useState } from 'react';
 import { createTodo } from '../services/TodosService.ts';
+import { Todo } from '../types.ts';
 
-export default function CreateTodo() {
+interface CreateTodoProps {
+  appendTodo: (todo: Todo) => void;
+}
+
+export default function CreateTodo({ appendTodo }: CreateTodoProps) {
   const [description, setDescription] = useState<string>('');
 
   async function submitTodo(event: FormEvent) {
