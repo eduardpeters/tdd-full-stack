@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Todo, TodoDto } from '../types.ts';
-import { getAllTodos, createTodo } from '../services/TodosService.ts';
+import {
+  getAllTodos,
+  createTodo,
+  updateTodo,
+} from '../services/TodosService.ts';
 
 export default function useTodos() {
   const [todos, setTodos] = useState<Todo[] | undefined>(undefined);
@@ -22,7 +26,7 @@ export default function useTodos() {
   }, [todos]);
 
   async function appendTodo(newTodo: TodoDto) {
-    if (newTodo.description?.length === 0 || todos === undefined) {
+    if (newTodo.description?.length === 0) {
       return;
     }
     const response = await createTodo({
@@ -32,9 +36,30 @@ export default function useTodos() {
     if ('error' in response) {
       return response;
     } else {
-      setTodos([...todos, response]);
+      setTodos([...todos!, response]);
     }
   }
 
-  return [todos, error, appendTodo] as const;
+  async function replaceTodo(todoToUpdate: Todo) {
+    if (
+      todoToUpdate.id === undefined ||
+      todoToUpdate.description?.length === 0 ||
+      todoToUpdate.isComplete === undefined
+    ) {
+      return;
+    }
+    const response = await updateTodo(todoToUpdate.id, {
+      description: todoToUpdate.description,
+      isComplete: todoToUpdate.isComplete,
+    });
+    if ('error' in response) {
+      return response;
+    } else {
+      setTodos(
+        todos!.map((todo) => (todo.id === response.id ? response : todo))
+      );
+    }
+  }
+
+  return [todos, error, appendTodo, replaceTodo] as const;
 }

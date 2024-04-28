@@ -64,7 +64,7 @@ describe('useTodos hook', () => {
     expect(error).toBeUndefined();
   });
 
-  test.skip('A todos array can be updated', async () => {
+  test('A todo can be updated', async () => {
     const mockTodos = [
       { id: 1, description: 'First todo', isComplete: false },
       { id: 2, description: 'Second todo', isComplete: true },
@@ -73,14 +73,17 @@ describe('useTodos hook', () => {
     const { result } = await waitFor(() => renderHook(() => useTodos()));
     let [todos, error, , updateTodo] = result.current;
 
-    const updatedTodos = [
-      { id: 1, description: 'First todo', isComplete: true },
-      { id: 2, description: 'Second todo', isComplete: true },
-    ];
-    act(() => setTodos(updatedTodos));
-    [todos, setTodos, error] = result.current;
+    const todoToUpdate = {
+      id: 2,
+      description: 'Second todo pending',
+      isComplete: false,
+    };
+    fetch.mockResolvedValue(createFetchResponse(todoToUpdate));
+    await waitFor(() => act(() => updateTodo(todoToUpdate)));
+    [todos, error] = result.current;
 
-    expect(todos).to.deep.equal(updatedTodos);
+    expect(todos).toHaveLength(2);
+    expect(todos).to.deep.equal([mockTodos[0], todoToUpdate]);
     expect(error).toBeUndefined();
   });
 });
