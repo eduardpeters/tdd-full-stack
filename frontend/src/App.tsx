@@ -1,11 +1,13 @@
 import CreateTodo from './components/CreateTodo.tsx';
 import TodosList from './components/TodosList.tsx';
+import useTodos from './hooks/useTodos.tsx';
 
 function App() {
+  const [todos, setTodos, error] = useTodos();
   return (
     <>
-      <CreateTodo />
-      <TodosList />
+      <CreateTodo appendTodo={() => undefined} />
+      <TodosList todos={todos} setTodos={setTodos} error={error} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Todo } from '../types.ts';
-import { getAllTodos } from '../services/TodosService.ts';
+import { Todo, TodoDto } from '../types.ts';
+import { getAllTodos, createTodo } from '../services/TodosService.ts';
 
 export default function useTodos() {
   const [todos, setTodos] = useState<Todo[] | undefined>(undefined);
@@ -21,5 +21,20 @@ export default function useTodos() {
     }
   }, [todos]);
 
-  return [todos, setTodos, error] as const;
+  async function appendTodo(newTodo: TodoDto) {
+    if (newTodo.description?.length === 0 || todos === undefined) {
+      return;
+    }
+    const response = await createTodo({
+      description: newTodo.description,
+      isComplete: false,
+    });
+    if ('error' in response) {
+      return response;
+    } else {
+      setTodos([...todos, response]);
+    }
+  }
+
+  return [todos, error, appendTodo] as const;
 }

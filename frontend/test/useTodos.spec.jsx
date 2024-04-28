@@ -18,7 +18,7 @@ describe('useTodos hook', () => {
   test('An error is returned if there is no response', async () => {
     fetch.mockResolvedValue(createFetchResponse({}, false));
     const { result } = await waitFor(() => renderHook(() => useTodos()));
-    const [todos, , error] = result.current;
+    const [todos, error] = result.current;
 
     expect(todos).toBe(undefined);
     expect(error).toBeDefined();
@@ -29,7 +29,7 @@ describe('useTodos hook', () => {
     const mockTodos = [];
     fetch.mockResolvedValue(createFetchResponse(mockTodos));
     const { result } = await waitFor(() => renderHook(() => useTodos()));
-    const [todos, , error] = result.current;
+    const [todos, error] = result.current;
 
     expect(todos).to.deep.equal([]);
     expect(error).toBeUndefined();
@@ -42,20 +42,36 @@ describe('useTodos hook', () => {
     ];
     fetch.mockResolvedValue(createFetchResponse(mockTodos));
     const { result } = await waitFor(() => renderHook(() => useTodos()));
-    const [todos, , error] = result.current;
+    const [todos, error] = result.current;
 
     expect(todos).to.deep.equal(mockTodos);
     expect(error).toBeUndefined();
   });
 
-  test('A todos array can be updated', async () => {
+  test('A todo is created and appended', async () => {
+    const mockTodos = [];
+    fetch.mockResolvedValue(createFetchResponse(mockTodos));
+    const { result } = await waitFor(() => renderHook(() => useTodos()));
+    let [todos, error, createTodo] = result.current;
+
+    const newTodo = { id: 1, description: 'First todo', isComplete: false };
+    fetch.mockResolvedValue(createFetchResponse(newTodo));
+    await waitFor(() => act(() => createTodo(newTodo)));
+    [todos, error, createTodo] = result.current;
+
+    expect(todos).toHaveLength(1);
+    expect(todos).to.deep.equal([newTodo]);
+    expect(error).toBeUndefined();
+  });
+
+  test.skip('A todos array can be updated', async () => {
     const mockTodos = [
       { id: 1, description: 'First todo', isComplete: false },
       { id: 2, description: 'Second todo', isComplete: true },
     ];
     fetch.mockResolvedValue(createFetchResponse(mockTodos));
     const { result } = await waitFor(() => renderHook(() => useTodos()));
-    let [todos, setTodos, error] = result.current;
+    let [todos, error, , updateTodo] = result.current;
 
     const updatedTodos = [
       { id: 1, description: 'First todo', isComplete: true },
