@@ -1,4 +1,4 @@
-import { updateTodo } from '../services/TodosService.ts';
+import { useState } from 'react';
 import type { Todo, ResponseError } from '../types.ts';
 
 interface TodoCardProps {
@@ -12,6 +12,19 @@ export default function TodoCard({
   updateTodo,
   deleteTodo,
 }: TodoCardProps) {
+  const [newDescription, setNewDescription] = useState(todo.description);
+
+  async function changeDescription() {
+    if (todo.description === newDescription) {
+      return;
+    }
+    const error = await updateTodo({ ...todo, description: newDescription });
+
+    if (error) {
+      alert(error.error);
+    }
+  }
+
   async function changeCompleteness() {
     const error = await updateTodo({ ...todo, isComplete: !todo.isComplete });
 
@@ -21,7 +34,18 @@ export default function TodoCard({
   }
   return (
     <div>
-      <span data-testid="todo-description">{todo.description}</span>
+      <label data-testid="todo-description">
+        {todo.description}
+        <input
+          type="text"
+          value={newDescription}
+          onChange={(e) => setNewDescription(e.target.value)}
+          data-testid="description-input"
+        ></input>
+      </label>
+      <button onClick={changeDescription} data-testid="description-button">
+        Update description
+      </button>
       <span data-testid="todo-completeness">
         {todo.isComplete ? 'Done!' : 'Pending'}
       </span>
