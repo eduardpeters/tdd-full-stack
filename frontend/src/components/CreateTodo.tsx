@@ -1,9 +1,8 @@
 import { FormEvent, useState } from 'react';
-import { createTodo } from '../services/TodosService.ts';
-import { Todo } from '../types.ts';
+import { ResponseError, TodoDto } from '../types.ts';
 
 interface CreateTodoProps {
-  appendTodo: (todo: Todo) => void;
+  appendTodo: (todo: TodoDto) => Promise<ResponseError | undefined>;
 }
 
 export default function CreateTodo({ appendTodo }: CreateTodoProps) {
@@ -14,15 +13,15 @@ export default function CreateTodo({ appendTodo }: CreateTodoProps) {
     if (description.length === 0) {
       return;
     }
-    const newTodo = await createTodo({
+    const newTodo = {
       description: description,
       isComplete: false,
-    });
+    };
 
-    if ('error' in newTodo) {
-      alert(newTodo.error);
-    } else {
-      appendTodo(newTodo);
+    const error = await appendTodo(newTodo);
+
+    if (error) {
+      alert(error);
     }
   }
 
