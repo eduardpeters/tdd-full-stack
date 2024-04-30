@@ -3,10 +3,12 @@ import { fireEvent, render } from '@testing-library/react';
 import TodoCard from '../src/components/TodoCard.tsx';
 
 const updateTodo = vi.fn();
+const deleteTodo = vi.fn();
 
 describe('Todos list component', () => {
   afterEach(() => {
     updateTodo.mockReset();
+    deleteTodo.mockReset();
   });
 
   test("It renders a todo's details", () => {
@@ -58,5 +60,20 @@ describe('Todos list component', () => {
       ...mockTodo,
       description: newDescription,
     });
+  });
+
+  test('A todo can be deleted', async () => {
+    const mockTodo = { id: 1, description: 'First todo', isComplete: false };
+    const { getByTestId } = render(
+      <TodoCard
+        todo={mockTodo}
+        updateTodo={updateTodo}
+        deleteTodo={deleteTodo}
+      />
+    );
+
+    getByTestId('delete-button').click();
+
+    expect(deleteTodo).toHaveBeenCalledWith(mockTodo.id);
   });
 });

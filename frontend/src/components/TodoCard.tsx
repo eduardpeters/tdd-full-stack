@@ -32,6 +32,15 @@ export default function TodoCard({
       alert(error.error);
     }
   }
+
+  async function removeTodo() {
+    const error = await deleteTodo(todo.id);
+
+    if (error) {
+      alert(error.error);
+    }
+  }
+
   return (
     <div>
       <label data-testid="todo-description">
@@ -53,6 +62,9 @@ export default function TodoCard({
         data-testid="complete-button"
         onClick={changeCompleteness}
       >{`Mark ${todo.isComplete ? 'not' : ''} complete`}</button>
+      <button data-testid="delete-button" onClick={removeTodo}>
+        Delete Todo
+      </button>
     </div>
   );
 }
