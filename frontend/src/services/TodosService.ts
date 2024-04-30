@@ -98,7 +98,7 @@ export async function updateTodo(
   }
 }
 
-export async function deleteTodo(id: number): Promise<Todo | ResponseError> {
+export async function deleteTodo(id: number): Promise<object | ResponseError> {
   if (id === undefined) {
     return { error: 'Incomplete request data' };
   }
@@ -110,8 +110,7 @@ export async function deleteTodo(id: number): Promise<Todo | ResponseError> {
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    const todos = await response.json();
-    return todos;
+    return {};
   } catch (e) {
     let message;
     if (e instanceof Error) {
